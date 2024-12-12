@@ -60,63 +60,69 @@ function cleanUnusedImports(text, options) {
       })
     );
 
-    imports.forEach((imp) => {
+    imports.forEach((importDeclaration) => {
       let hasChanges = false;
-      const namedImports = imp.getNamedImports();
-      const defaultImport = imp.getDefaultImport();
-      const namespaceImport = imp.getNamespaceImport();
+      const namespaceImport = importDeclaration.getNamespaceImport()?.getText();
+      let defaultImport = importDeclaration.getDefaultImport()?.getText();
+      const namedImports = importDeclaration.getNamedImports().map((namedImport) => ({
+        name: namedImport.getName(),
+        text: namedImport.getText(),
+      }));
+      const moduleSpecifier = importDeclaration.getModuleSpecifier().getText();
 
+      // Check usage of default import
       if (defaultImport) {
-        const identifier = defaultImport.getText();
-        const usageCount = countIdentifierUsages(sourceFile, defaultImport?.getText());
+        const usageCount = countIdentifierUsages(sourceFile, defaultImport); // MODIFIED: Use captured text
         if (usageCount < 1) {
-          console.log(`LOG Removing unused default import: ${identifier}`);
-          imp.remove();
+          console.log(`LOG Removing unused default import: ${defaultImport}`);
+          defaultImport = null; // Asigna null al defaultImport en lugar de eliminar toda la declaración aquí
+          hasChanges = true; // Marca que hay cambios
         }
       }
 
-      namedImports.forEach((namedImport) => {
-        console.log(`LOG namedImport: ${namedImport.getName()}`);
-        const identifierName = namedImport?.getText();
+      // Check usage of named imports
+      const unusedNamedImports = namedImports.filter(
+        (namedImport) => countIdentifierUsages(sourceFile, namedImport.name) < 1 // MODIFIED: Use captured name
+      );
 
-        if (identifierName) {
-          const usageCount = countIdentifierUsages(sourceFile, identifierName);
-          console.log(`LOG usageCount: ${usageCount}`);
-          if (usageCount < 1) {
-            namedImport.remove();
-            hasChanges = true;
-          }
-        } else {
-          console.error('Identifier not found for import:', namedImport);
-        }
-      });
+      // Remove unused named imports
+      let remainingNamedImports = namedImports.filter(
+        (namedImport) => !unusedNamedImports.includes(namedImport) // MODIFIED: Filter safely
+      );
+
+      if (unusedNamedImports.length > 0) {
+        console.log(
+          `LOG Removing unused named imports: ${unusedNamedImports.map((n) => n.name).join(', ')}`
+        );
+        hasChanges = true;
+      }
 
       if (namespaceImport) {
-        const identifier = namespaceImport.getText();
-        const isUsed = sourceFile.getDescendants().some((node) => {
-          // Check runtime usage
-          const runtimeUsage = node.getText().startsWith(identifier + '.');
-          // Check type-only usage (TypeScript)
-          const isTypeUsage =
-            node.getKind() === ts.SyntaxKind.TypeReference && node.getText().startsWith(identifier);
-          return runtimeUsage || isTypeUsage;
-        });
-        if (!isUsed) {
-          console.log(`LOG Removing unused namespace import: ${identifier}`);
-          namespaceImport.remove();
-          hasUnusedImports = true;
+        const usageCount = countIdentifierUsages(sourceFile, namespaceImport);
+
+        if (usageCount < 1) {
+          console.log(`LOG Removing unused namespace import: ${namespaceImport}`);
+          importDeclaration.remove();
+          hasChanges = true;
+          return;
         }
       }
 
-      // Remove the complete importDeclaration if there are no more named imports, default import nor namespace import.
-      if (
-        hasChanges &&
-        imp.getNamedImports().length === 0 &&
-        !imp.getDefaultImport() &&
-        !imp.getNamespaceImport()
-      ) {
-        console.log(`LOG Removing entire import declaration: ${imp.getText()}`);
-        imp.remove();
+      // Update or Remove Entire Declaration
+      if (hasChanges) {
+        if (remainingNamedImports.length === 0 && !defaultImport) {
+          console.log(`LOG Removing entire import declaration: ${importDeclaration.getText()}`);
+          importDeclaration.remove();
+        } else {
+          console.log(`LOG Updating import declaration: ${importDeclaration.getText()}`);
+          importDeclaration.replaceWithText(
+            regenerateImportDeclarationText(
+              defaultImport,
+              remainingNamedImports.map((n) => n.text), // MODIFIED: Use remaining texts
+              moduleSpecifier
+            )
+          );
+        }
       }
     });
 
@@ -139,4 +145,12 @@ function countIdentifierUsages(sourceFile, identifierName) {
   const usageCount = appearancesCount - 1;
 
   return usageCount;
+}
+
+function regenerateImportDeclarationText(defaultImport, namedImports, moduleSpecifier) {
+  const defaultPart = defaultImport ? `${defaultImport}` : '';
+  const namedPart = namedImports.length > 0 ? `{ ${namedImports.join(', ')} }` : '';
+  const separator = defaultPart && namedPart ? ', ' : '';
+
+  return `import ${defaultPart}${separator}${namedPart} from ${moduleSpecifier};`;
 }
