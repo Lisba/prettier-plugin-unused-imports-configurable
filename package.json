@@ -1,0 +1,26 @@
+{
+  "name": "prettier-plugin-unused-imports-configurable",
+  "version": "1.0.0",
+  "description": "A Prettier plugin configurable to remove unused imports from JavaScript and TypeScript files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "prettier",
+    "plugin",
+    "typescript",
+    "unused imports",
+    "javascript",
+    "javascript",
+    "monorepo",
+    "configurable"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prettier": "3.4.2",
+    "ts-morph": "24.0.0",
+    "typescript": "5.7.2"
+  }
+}
