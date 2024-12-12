@@ -17,7 +17,7 @@
     "configurable"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "prettier": "3.4.2",
     "ts-morph": "24.0.0",
