@@ -143,6 +143,128 @@ describe('cleanUnusedImports suite', () => {
     );
   });
 
+  test('File with duplicated imports', () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `import React from 'react';
+    import React from 'react';
+  
+    const Component = () => {
+      React;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    const expected = `import React from 'react';
+
+    const Component = () => {
+      React;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
+
+  test('File with several duplicated imports', () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `import React from 'react';
+    import React from 'react';
+    import React from 'react';
+    import React from 'react';
+  
+    const Component = () => {
+      React;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    const expected = `import React from 'react';
+
+    const Component = () => {
+      React;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
+
+  test('File with duplicated unused imports combined with a used import', () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `import { useState } from 'react';
+    import { useState, useEffect } from 'react';
+
+    function Component() {
+      useEffect;
+      return <div>Component</div>;
+    }
+
+    export default Component;`;
+
+    const expected = `import { useEffect } from 'react';
+
+    function Component() {
+      useEffect;
+      return <div>Component</div>;
+    }
+
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
+
+  test('File with duplicated unused imports combined with used imports more complex', () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `import { useState } from 'react';
+    import { useState, useRef } from 'react';
+    import { useState, useEffect } from 'react';
+
+    function Component() {
+      useEffect;
+      useRef;
+      return <div>Component</div>;
+    }
+
+    export default Component;`;
+
+    const expected = `import { useRef } from 'react';
+    import { useEffect } from 'react';
+
+    function Component() {
+      useEffect;
+      useRef;
+      return <div>Component</div>;
+    }
+
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
+
   test.skip('File with an unused named import used via default import', () => {
     const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
     const options = {
@@ -161,33 +283,6 @@ describe('cleanUnusedImports suite', () => {
     
     const Component = () => {
       React.useEffect();
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
-
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
-      normalizeWhitespace(expected)
-    );
-  });
-
-  test.skip('File with duplicate imports', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import React from 'react';
-    import React from 'react';
-  
-    const Component = () => {
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
-
-    const expected = `import React from 'react';
-
-    const Component = () => {
       return <div>Hello</div>;
     };
   
