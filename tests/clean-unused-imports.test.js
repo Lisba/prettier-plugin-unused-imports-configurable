@@ -265,7 +265,7 @@ describe('cleanUnusedImports suite', () => {
     );
   });
 
-  test.skip('File with an unused named import used via default import', () => {
+  test(`File with an unused named import because it's used as an object's property`, () => {
     const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
     const options = {
       filepath: 'path/to-test',
