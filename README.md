@@ -5,10 +5,17 @@
 ![npm](https://img.shields.io/npm/dm/@lisba/prettier-plugin-unused-imports-configurable)
 ![NPM License](https://img.shields.io/npm/l/prettier-plugin-unused-imports-configurable)
 
-A Prettier plugin configurable to remove unused imports from JavaScript and TypeScript files specifying the folder to ignored. Useful for monorepos where different rules specifications are needed.
+A Prettier plugin configurable to remove unused imports from JavaScript and TypeScript modules with the ability to ignore the specified folders.
 
-- [Content]()
+Useful for monorepos where different rules specifications are needed.
+
+It works when you save your changes on your file if `formatOnSave` option is activated in your editor.
+
+More than 80% of tests coverage.
+
+## Content
   - [Installation](#installation)
+  - [Configuration](#configuration)
   - [Usage](#usage)
   - [Collaborate](#collaborate)
   - [License](#license)
@@ -21,7 +28,7 @@ pnpm: `pnpm add -D prettier-plugin-unused-imports-configurable`
 
 yarn: `yarn add -D prettier-plugin-unused-imports-configurable`
 
-## Usage
+## Configuration
 
 In your .prettierrc config file add the following replacing the ignoredDirectories to your needs:
 
@@ -32,6 +39,10 @@ In your .prettierrc config file add the following replacing the ignoredDirectori
   "ignoreDirectories": ["src/specific-folder"]
 }
 ```
+
+## Usage
+
+It works when prettier is used either by CLI (`prettier --write .`) or when you save your changes if `formatOnSave` option is activated in your editor.
 
 ## Collaborate
 
