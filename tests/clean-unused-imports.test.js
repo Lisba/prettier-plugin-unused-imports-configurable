@@ -292,4 +292,62 @@ describe('cleanUnusedImports suite', () => {
       normalizeWhitespace(expected)
     );
   });
+
+  test(`File with an unused alias named import`, () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `import { useState, useEffect as effect } from 'react';
+  
+    const Component = () => {
+      useState;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    const expected = `import { useState } from 'react';
+
+    const Component = () => {
+      useState;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
+
+  test(`File with a used alias named import`, () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `import { useState, useEffect as effect } from 'react';
+  
+    const Component = () => {
+      useState;
+      effect;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    const expected = `import { useState, useEffect as effect } from 'react';
+  
+    const Component = () => {
+      useState;
+      effect;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
 });
