@@ -350,4 +350,69 @@ describe('cleanUnusedImports suite', () => {
       normalizeWhitespace(expected)
     );
   });
+
+  test(`Ignore module based on the comment 'prettier-ignore-unused-imports-configurable'`, () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `// comment
+    // prettier-ignore-unused-imports-configurable
+    // comment
+    import { useEffect } from 'react';
+  
+    const Component = () => {
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    const expected = `// comment
+    // prettier-ignore-unused-imports-configurable
+    // comment
+    import { useEffect } from 'react';
+  
+    const Component = () => {
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
+
+  test.skip(`Unify multiple import declarations from the same module specifier`, () => {
+    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+    const options = {
+      filepath: 'path/to-test',
+    };
+    const text = `import React, { useState } from 'react';
+    import { useEffect } from 'react';
+  
+    const Component = () => {
+      React;
+      useState;
+      useEffect;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    const expected = `import React, { useState, useEffect } from 'react';
+  
+    const Component = () => {
+      React;
+      useState;
+      useEffect;
+      return <div>Hello</div>;
+    };
+  
+    export default Component;`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
 });

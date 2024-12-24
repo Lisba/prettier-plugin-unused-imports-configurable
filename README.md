@@ -14,6 +14,9 @@ It works when you save your changes on your file if `formatOnSave` option is act
 More than 80% of tests coverage.
 
 ## Content
+
+- [prettier-plugin-unused-imports-configurable](#prettier-plugin-unused-imports-configurable)
+  - [Content](#content)
   - [Installation](#installation)
   - [Configuration](#configuration)
   - [Usage](#usage)
@@ -37,6 +40,15 @@ In your .prettierrc config file add the following replacing the ignoredDirectori
   // ...other rules,
   "plugins": ["prettier-plugin-unused-imports-configurable"],
   "ignoreDirectories": ["src/specific-folder"]
+}
+```
+
+You can also ignore specific files based on an exclusion comment. It could be on the first line of the file or among other comments, but it must be before the first import declaration:
+
+```
+{
+  // unused-imports-configurable
+  import { something } from 'somewhere';
 }
 ```
 
