@@ -47,7 +47,7 @@ You can also ignore specific files based on an exclusion comment. It could be on
 
 ```
 {
-  // unused-imports-configurable
+  // prettier-ignore-unused-imports-configurable
   import { something } from 'somewhere';
 }
 ```
