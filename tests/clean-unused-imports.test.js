@@ -249,8 +249,7 @@ describe('cleanUnusedImports suite', () => {
 
     export default Component;`;
 
-    const expected = `import { useRef } from 'react';
-    import { useEffect } from 'react';
+    const expected = `import { useRef, useEffect } from 'react';
 
     function Component() {
       useEffect;
@@ -383,7 +382,7 @@ describe('cleanUnusedImports suite', () => {
     );
   });
 
-  test.skip(`Unify multiple import declarations from the same module specifier`, () => {
+  test(`Unify multiple import declarations from the same module specifier`, () => {
     const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
     const options = {
       filepath: 'path/to-test',
