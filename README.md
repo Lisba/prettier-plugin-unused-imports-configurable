@@ -9,12 +9,13 @@ A Prettier plugin to remove unused imports from JavaScript and TypeScript module
 
 ### Characteristics
 
-- Removes unused imports.
-- Unify imports from the same source to avoid multiple lines importing from the same folder/package.
-- Configurable to ignore any folder you need. Useful for monorepos where different rules specifications are needed.
-- It can also ingore specific files through exclusion comment.
-- It works when you save your changes on your file if `formatOnSave` option is activated in your editor.
-- More than 80% of tests coverage incluiding all its features.
+- **Automatically cleans up unused imports:** Detects and removes unused imports during code formatting.
+- **Merges duplicate imports:** Unifies imports from the same source to reduce redundant import statements.
+- **Configurable for specific needs:** Allows ignoring directories to avoid modifying imports in sensitive areas, making it ideal for monorepos or customized workflows.
+- **Supports exclusion comments:** Skips cleaning files with the // prettier-ignore-unused-imports-configurable comment placed above the first import declaration.
+- **Handles complex import scenarios:** Includes support for namespace imports `import * as React from 'react'`, alias imports `import { Component as Comp } from 'library'`, and qualified usages `React.useEffect()`.
+- **Works seamlessly with formatOnSave:** Automatically applies unused import cleanup when you save your file if this option is enabled in your editor.
+- **Extensive test coverage:** Achieves more than 80% test coverage, ensuring reliability across all its features.
 
 ## Content
 
