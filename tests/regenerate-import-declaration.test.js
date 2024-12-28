@@ -3,39 +3,39 @@ import regenerateImportDeclaration from '../lib/regenerate-import-declaration.js
 
 describe('regenerateImportDeclaration suite', () => {
   test('Import decalaration with default import', () => {
-    const defaultImport = 'React';
+    const defaultImport = 'defaultImport';
     const namedImports = [];
-    const moduleSpecifier = 'react';
+    const moduleSpecifier = 'module-name';
 
     expect(regenerateImportDeclaration(defaultImport, namedImports, moduleSpecifier)).toBe(
-      "import React from 'react';"
+      "import defaultImport from 'module-name';"
     );
   });
 
   test('Import decalaration with named imports', () => {
     const defaultImport = null;
-    const namedImports = ['useState', 'useEffect'];
-    const moduleSpecifier = 'react';
+    const namedImports = ['named', 'named2'];
+    const moduleSpecifier = 'module-name';
 
     expect(regenerateImportDeclaration(defaultImport, namedImports, moduleSpecifier)).toBe(
-      "import { useState, useEffect } from 'react';"
+      "import { named, named2 } from 'module-name';"
     );
   });
 
   test('Import decalaration with default and named imports', () => {
-    const defaultImport = 'React';
-    const namedImports = ['useState', 'useEffect'];
-    const moduleSpecifier = 'react';
+    const defaultImport = 'defaultImport';
+    const namedImports = ['named', 'named2'];
+    const moduleSpecifier = 'module-name';
 
     expect(regenerateImportDeclaration(defaultImport, namedImports, moduleSpecifier)).toBe(
-      "import React, { useState, useEffect } from 'react';"
+      "import defaultImport, { named, named2 } from 'module-name';"
     );
   });
 
   test('Import declaration with no imports', () => {
     const defaultImport = null;
     const namedImports = [];
-    const moduleSpecifier = 'react';
+    const moduleSpecifier = 'module-name';
 
     expect(() =>
       regenerateImportDeclaration(defaultImport, namedImports, moduleSpecifier)
@@ -43,8 +43,8 @@ describe('regenerateImportDeclaration suite', () => {
   });
 
   test('Import declaration with empty module specifier', () => {
-    const defaultImport = 'React';
-    const namedImports = ['useState'];
+    const defaultImport = 'defaultImport';
+    const namedImports = ['named'];
     const moduleSpecifier = '';
 
     expect(() =>

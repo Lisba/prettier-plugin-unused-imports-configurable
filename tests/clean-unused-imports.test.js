@@ -2,415 +2,342 @@ import { expect, test, describe } from 'vitest';
 import cleanUnusedImports from '../lib/clean-unused-imports.js';
 
 describe('cleanUnusedImports suite', () => {
-  test('File with no imports', () => {
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `const Component = () => {
-          return <div>Hello</div>;
-        };
-      
-        export default Component;`;
+  const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
+  const options = {
+    filepath: 'path/to-test',
+  };
 
-    expect(cleanUnusedImports(text, options)).toBe(text);
+  test('File with no imports', () => {
+    const input = `
+    const funct = () => {
+      return null;
+    };`;
+
+    expect(cleanUnusedImports(input, options)).toBe(input);
   });
 
   test('File with multiple used imports', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
+    const input = `
+    import { named } from 'module-name';
+    import defaultImport from 'module-name2';
+  
+    const func = () => {
+      named;
+      defaultImport.doSomething();
+    };`;
 
-    const text = `import { useState } from 'react';
-    import Alt from 'alt';
-  
-    const Component = () => {
-      const [state, setState] = useState(0);
-      Alt.doSomething();
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
-
-    const expected = `import { useState } from 'react';
-    import Alt from 'alt';
-  
-    const Component = () => {
-      const [state, setState] = useState(0);
-      Alt.doSomething();
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
-
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
-      normalizeWhitespace(expected)
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
+      normalizeWhitespace(input)
     );
   });
 
   test('File with one unused import', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
+    const input = `
+    import { named } from 'module-name';
 
-    const text = `import { useState } from 'react';
+    const func = () => {
+    };`;
 
-    const Component = () => {
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const expected = `
+    const func = () => {
+    };`;
 
-    const expected = `const Component = () => {
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
-
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test('File with multiple imports, some unused', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
+    const input = `
+    import defaultImport, { named, named2 } from 'module-name';
+    import defaultImport from 'module-name2';
+  
+    const func = () => {
+      const [state, setState] = named(0);
+    };`;
 
-    const text = `import React, { useState, useEffect } from 'react';
-    import Alt from 'alt';
+    const expected = `
+    import { named } from 'module-name';
   
-    const Component = () => {
-      const [state, setState] = useState(0);
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      const [state, setState] = named(0);
+    };`;
 
-    const expected = `import { useState } from 'react';
-  
-    const Component = () => {
-      const [state, setState] = useState(0);
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
-
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test('File with a used namespace import', () => {
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import * as React from 'react';
+    const input = `
+    import * as All from 'module-name';
   
-    const Component = () => {
-      React.useState();
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      All.named();
+    };`;
 
-    expect(cleanUnusedImports(text, options)).toBe(text);
+    expect(cleanUnusedImports(input, options)).toBe(input);
   });
 
   test('File with an unused namespace import', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import * as React from 'react';
+    const input = `
+    import * as All from 'module-name';
   
-    const Component = () => {
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+    };`;
 
-    const expected = `const Component = () => {
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const expected = `
+    const func = () => {
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test('File with duplicated imports', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import React from 'react';
-    import React from 'react';
+    const input = `
+    import defaultImport from 'module-name';
+    import defaultImport from 'module-name';
   
-    const Component = () => {
-      React;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport;
+    };`;
 
-    const expected = `import React from 'react';
+    const expected = `
+    import defaultImport from 'module-name';
 
-    const Component = () => {
-      React;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport;
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test('File with several duplicated imports', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import React from 'react';
-    import React from 'react';
-    import React from 'react';
-    import React from 'react';
+    const input = `
+    import defaultImport from 'module-name';
+    import defaultImport from 'module-name';
+    import defaultImport from 'module-name';
+    import defaultImport from 'module-name';
   
-    const Component = () => {
-      React;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport;
+    };`;
 
-    const expected = `import React from 'react';
+    const expected = `
+    import defaultImport from 'module-name';
 
-    const Component = () => {
-      React;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport;
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test('File with duplicated unused imports combined with a used import', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import { useState } from 'react';
-    import { useState, useEffect } from 'react';
+    const input = `
+    import { named } from 'module-name';
+    import { named, named2 } from 'module-name';
 
-    function Component() {
-      useEffect;
-      return <div>Component</div>;
-    }
+    function func() {
+      named2;
+    `;
 
-    export default Component;`;
+    const expected = `
+    import { named2 } from 'module-name';
 
-    const expected = `import { useEffect } from 'react';
+    function func() {
+      named2;
+    `;
 
-    function Component() {
-      useEffect;
-      return <div>Component</div>;
-    }
-
-    export default Component;`;
-
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test('File with duplicated unused imports combined with used imports more complex', () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import { useState } from 'react';
-    import { useState, useRef } from 'react';
-    import { useState, useEffect } from 'react';
+    const input = `
+    import { named } from 'module-name';
+    import { named, named2 } from 'module-name';
+    import { named, named3 } from 'module-name';
 
-    function Component() {
-      useEffect;
-      useRef;
-      return <div>Component</div>;
-    }
+    function func() {
+      named2;
+      named3;
+    }`;
 
-    export default Component;`;
+    const expected = `
+    import { named2, named3 } from 'module-name';
 
-    const expected = `import { useRef, useEffect } from 'react';
+    function func() {
+      named2;
+      named3;
+    }`;
 
-    function Component() {
-      useEffect;
-      useRef;
-      return <div>Component</div>;
-    }
-
-    export default Component;`;
-
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test(`File with an unused named import because it's used as an object's property`, () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import React, { useEffect } from 'react';
+    const input = `
+    import defaultImport, { named2 } from 'module-name';
   
-    const Component = () => {
-      React.useEffect();
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport.named2();
+    };`;
 
-    const expected = `import React from 'react';
+    const expected = `
+    import defaultImport from 'module-name';
     
-    const Component = () => {
-      React.useEffect();
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport.named2();
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test(`File with an unused alias named import`, () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import { useState, useEffect as effect } from 'react';
+    const input = `
+    import { named, named2 as alias2 } from 'module-name';
   
-    const Component = () => {
-      useState;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      named;
+    };`;
 
-    const expected = `import { useState } from 'react';
+    const expected = `
+    import { named } from 'module-name';
 
-    const Component = () => {
-      useState;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      named;
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test(`File with a used alias named import`, () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import { useState, useEffect as effect } from 'react';
+    const input = `
+    import { named, named2 as alias2 } from 'module-name';
   
-    const Component = () => {
-      useState;
-      effect;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      named;
+      alias2;
+    };`;
 
-    const expected = `import { useState, useEffect as effect } from 'react';
+    const expected = `
+    import { named, named2 as alias2 } from 'module-name';
   
-    const Component = () => {
-      useState;
-      effect;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      named;
+      alias2;
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test(`Ignore module based on the comment 'prettier-ignore-unused-imports-configurable'`, () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `// comment
+    const input = `
+    // comment
     // prettier-ignore-unused-imports-configurable
     // comment
-    import { useEffect } from 'react';
+    import { named2 } from 'module-name';
   
-    const Component = () => {
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+    };`;
 
-    const expected = `// comment
+    const expected = `
+    // comment
     // prettier-ignore-unused-imports-configurable
     // comment
-    import { useEffect } from 'react';
+    import { named2 } from 'module-name';
   
-    const Component = () => {
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });
 
   test(`Unify multiple import declarations from the same module specifier`, () => {
-    const normalizeWhitespace = (str) => str.replace(/\s+/g, ' ').trim();
-    const options = {
-      filepath: 'path/to-test',
-    };
-    const text = `import React, { useState } from 'react';
-    import { useEffect } from 'react';
+    const input = `
+    import defaultImport, { named } from 'module-name';
+    import { named2 } from 'module-name';
   
-    const Component = () => {
-      React;
-      useState;
-      useEffect;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport;
+      named;
+      named2;
+    };`;
 
-    const expected = `import React, { useState, useEffect } from 'react';
+    const expected = `
+    import defaultImport, { named, named2 } from 'module-name';
   
-    const Component = () => {
-      React;
-      useState;
-      useEffect;
-      return <div>Hello</div>;
-    };
-  
-    export default Component;`;
+    const func = () => {
+      defaultImport;
+      named;
+      named2;
+    };`;
 
-    expect(normalizeWhitespace(cleanUnusedImports(text, options))).toBe(
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
+      normalizeWhitespace(expected)
+    );
+  });
+
+  test(`Handle default + namespace import case`, () => {
+    const input = `
+    import defaultImport, * as ReactObj from 'module-name';
+    import { named2 } from 'module-name';
+  
+    const func = () => {
+      defaultImport;
+      ReactObj;
+      named2;
+    };`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
+      normalizeWhitespace(input)
+    );
+  });
+
+  test(`Handle multiple namespace imports case`, () => {
+    const input = `
+    import * as All from 'module-name';
+    import * as All2 from 'module-name';
+    import defaultImport from 'module-name';
+    import { named2 } from 'module-name';
+  
+    const func = () => {
+      defaultImport;
+      All;
+      All2;
+      named2;
+    };`;
+
+    const expected = `
+    import * as All from 'module-name';
+    import * as All2 from 'module-name';
+    import defaultImport, { named2 } from 'module-name';
+  
+    const func = () => {
+      defaultImport;
+      All;
+      All2;
+      named2;
+    };`;
+
+    expect(normalizeWhitespace(cleanUnusedImports(input, options))).toBe(
       normalizeWhitespace(expected)
     );
   });

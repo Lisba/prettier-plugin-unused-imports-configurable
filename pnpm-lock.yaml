@@ -14,9 +14,6 @@ importers:
       ts-morph:
         specifier: 24.0.0
         version: 24.0.0
-      typescript:
-        specifier: 5.7.2
-        version: 5.7.2
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.8
@@ -654,11 +651,6 @@ packages:
   ts-morph@24.0.0:
     resolution: {integrity: sha512-2OAOg/Ob5yx9Et7ZX4CvTCc0UFoZHwLEJ+dpDPSUi5TgwwlTlX47w+iFRrEwzUZwYACjq83cgjS/Da50Ga37uw==}
 
-  typescript@5.7.2:
-    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   vite-node@2.1.8:
     resolution: {integrity: sha512-uPAwSr57kYjAUux+8E2j0q0Fxpn8M9VoyfGiRI8Kfktz9NcYMCenwY5RnZxnF1WTu3TGiYipirIzacLL3VVGFg==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -1276,8 +1268,6 @@ snapshots:
     dependencies:
       '@ts-morph/common': 0.25.0
       code-block-writer: 13.0.3
-
-  typescript@5.7.2: {}
 
   vite-node@2.1.8:
     dependencies:
