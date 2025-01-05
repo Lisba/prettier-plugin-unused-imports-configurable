@@ -1,15 +1,19 @@
-name: Tests and publish workflow
+name: Tests workflow
 
 on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason of the publishment'
+        description: 'Reason of the trigger'
         required: true
-        default: 'New version'
+        default: 'General purpose'
 
 jobs:
-  tests-and-publish:
+  test:
     runs-on: ubuntu-22.04
 
     strategy:
@@ -17,6 +21,8 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
+      - name: Detect Trigger Reason
+        run: echo "Triggered because of ${{ github.event_name }} for ${{ inputs.reason }}"
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Install pnpm
@@ -31,5 +37,3 @@ jobs:
         run: |
           pnpm install
           pnpm test
-      - name: publish on npm
-        run: pnpm publish
