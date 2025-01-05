@@ -2,13 +2,12 @@ name: Tests and publish workflow
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   tests-and-publish:
-
     runs-on: ubuntu-22.04
 
     strategy:
@@ -16,20 +15,20 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install Dependencies and test
-    - run: |
-        pnpm install
-        pnpm test
-    - name: Install Dependencies and test
-    - run: pnpm publish
-      if: github.event_name == 'push'
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies and test
+        run: |
+          pnpm install
+          pnpm test
+      - name: publish on npm
+        run: pnpm publish
+        if: github.event_name == 'push'
