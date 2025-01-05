@@ -29,14 +29,22 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+      - name: Configure npm registry
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Install Dependencies and test
         run: |
           pnpm install
           pnpm test
-      - name: Configure npm registry
-        run: pnpm config set registry https://registry.npmjs.org/
+      - name: Validate NPM_TOKEN
+        if: matrix.node-version == '20.x'
+        run: 'echo "NPM_TOKEN is set and has length: ${#NODE_AUTH_TOKEN}"'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish on npm
         if: matrix.node-version == '20.x'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --access public --no-git-checks
+      - name: Print npm debug log
+        run: cat /home/runner/.npm/_logs/*.log || echo "No debug logs found"
