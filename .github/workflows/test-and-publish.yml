@@ -33,6 +33,8 @@ jobs:
         run: |
           pnpm install
           pnpm test
+      - name: Configure npm registry
+        run: pnpm config set registry https://registry.npmjs.org/
       - name: Publish on npm
         if: matrix.node-version == '20.x'
         env:
