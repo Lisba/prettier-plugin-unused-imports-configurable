@@ -11,6 +11,7 @@ on:
 jobs:
   tests-and-publish:
     runs-on: ubuntu-22.04
+    environment: Production
 
     strategy:
       matrix:
