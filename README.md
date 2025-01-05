@@ -1,5 +1,6 @@
 # prettier-plugin-unused-imports-configurable
 
+[![Tests workflow](https://github.com/Lisba/prettier-plugin-unused-imports-configurable/actions/workflows/test.yml/badge.svg)](https://github.com/Lisba/prettier-plugin-unused-imports-configurable/actions/workflows/test.yml)
 ![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/prettier-plugin-unused-imports-configurable)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Lisba/prettier-plugin-unused-imports-configurable)
 ![npm](https://img.shields.io/npm/dm/@lisba/prettier-plugin-unused-imports-configurable)
@@ -19,11 +20,14 @@ A Prettier plugin to remove unused imports from JavaScript and TypeScript module
 
 ## Content
 
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Collaborate](#collaborate)
-- [License](#license)
+- [prettier-plugin-unused-imports-configurable](#prettier-plugin-unused-imports-configurable)
+  - [Characteristics](#characteristics)
+  - [Content](#content)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Usage](#usage)
+  - [Collaborate](#collaborate)
+  - [License](#license)
 
 ## Installation
 
@@ -36,6 +40,7 @@ yarn: `yarn add -D prettier-plugin-unused-imports-configurable`
 ## Configuration
 
 In your .prettierrc config file add the following to start using the plugin:
+
 ```
 {
   // ...other rules,
@@ -44,6 +49,7 @@ In your .prettierrc config file add the following to start using the plugin:
 ```
 
 To ignore specific folders add its paths to the ignoredDirectories array:
+
 ```
 {
   // ...other rules,
@@ -53,6 +59,7 @@ To ignore specific folders add its paths to the ignoredDirectories array:
 ```
 
 You can also ignore specific files based on an exclusion comment. It could be on the first line of the file or among other comments, but it must be before the first import declaration:
+
 ```
   // prettier-ignore-unused-imports-configurable
   import { something } from 'somewhere';
