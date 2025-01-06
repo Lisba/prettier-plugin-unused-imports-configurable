@@ -32,13 +32,16 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Install Dependencies
         run: pnpm install
-      - name: Upload artifacts
+      - name: Upload environment files
         uses: actions/upload-artifact@v3
         with:
-          name: dependencies
+          name: environment
           path: |
             node_modules
             .npmrc
+            pnpm-lock.yaml
+            package.json
+            .
 
   test:
     needs: ['prepare-environment']
@@ -48,7 +51,9 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: dependencies
+          name: environment
+      - name: List downloaded artifacts
+        run: ls -la
       - name: Run tests
         run: pnpm test
 
@@ -60,7 +65,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: dependencies
+          name: environment
       - name: Publish on npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
