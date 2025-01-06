@@ -52,6 +52,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: environment
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: List downloaded artifacts
         run: ls -la
       - name: Run tests
@@ -66,7 +70,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: environment
-      - name: Publish on npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish --access public --no-git-checks
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: List downloaded artifacts
+        run: ls -la
+      # - name: Publish on npm
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: pnpm publish --access public --no-git-checks
