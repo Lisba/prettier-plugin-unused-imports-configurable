@@ -18,7 +18,7 @@ jobs:
     environment: Production
     steps:
       - name: Setup environment
-        uses: ./.github/workflows/setup-environment.yml
+        uses: ./.github/actions/setup-environment
       - name: Run tests
         run: pnpm test
 
@@ -28,7 +28,7 @@ jobs:
     environment: Production
     steps:
       - name: Setup environment
-        uses: ./.github/workflows/setup-environment.yml
+        uses: ./.github/actions/setup-environment
       # - name: 'Automated Version Bump'
       #   uses: 'phips28/gh-action-bump-version@master'
       #   env:
