@@ -8,15 +8,14 @@ on:
         required: true
         default: 'New version'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  tests-and-publish:
+  prepare-environment:
     runs-on: ubuntu-22.04
     environment: Production
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -32,12 +31,23 @@ jobs:
       - name: Configure npm registry .npmrc
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - name: Install Dependencies and test
+      - name: Install Dependencies
         run: |
           pnpm install
-          pnpm test
+
+  test:
+    runs-on: ubuntu-22.04
+    environment: Production
+    steps:
+      - name: Run tests
+        run: pnpm test
+
+  publish:
+    needs: ['test']
+    runs-on: ubuntu-22.04
+    environment: Production
+    steps:
       - name: Publish on npm
-        if: matrix.node-version == '20.x'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --access public --no-git-checks

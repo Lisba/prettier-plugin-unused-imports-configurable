@@ -4,7 +4,7 @@ on:
   push:
     branches: ['main']
   pull_request:
-    branches: ['main']
+    branches: ['**']
   workflow_dispatch:
     inputs:
       reason:
@@ -12,14 +12,16 @@ on:
         required: true
         default: 'General purpose'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   test:
     runs-on: ubuntu-22.04
-
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-
     steps:
       - name: Detect Trigger Reason
         run: echo "Triggered because of ${{ github.event_name }} for ${{ inputs.reason }}"
@@ -33,6 +35,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
       - name: Install Dependencies and test
         run: |
           pnpm install
