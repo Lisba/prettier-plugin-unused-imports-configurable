@@ -29,12 +29,12 @@ jobs:
     steps:
       - name: Setup environment
         uses: ./.github/workflows/setup-environment.yml
-      - name: 'Automated Version Bump'
-        uses: 'phips28/gh-action-bump-version@master'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          version-type: ${{ inputs.version-bump }}
+      # - name: 'Automated Version Bump'
+      #   uses: 'phips28/gh-action-bump-version@master'
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     version-type: ${{ inputs.version-bump }}
       # - name: Publish on npm
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
