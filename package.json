@@ -1,6 +1,6 @@
 {
   "name": "prettier-plugin-unused-imports-configurable",
-  "version": "1.13.11",
+  "version": "1.13.12",
   "description": "Prettier plugin configurable to remove unused imports from JavaScript and TypeScript files.",
   "main": "index.js",
   "author": "Lisbaldy de Jesus",
