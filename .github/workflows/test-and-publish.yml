@@ -29,13 +29,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Configure npm registry .npmrc
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Install Dependencies
-        run: |
-          pnpm install
+        run: pnpm install
 
   test:
+    needs: ['prepare-environment']
     runs-on: ubuntu-22.04
     environment: Production
     steps:
