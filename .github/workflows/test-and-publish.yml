@@ -3,10 +3,10 @@ name: Tests and publish workflow
 on:
   workflow_dispatch:
     inputs:
-      reason:
-        description: 'Reason of the publishment'
+      version-bump:
+        description: 'Version to bump'
         required: true
-        default: 'New version'
+        default: 'patch'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -53,6 +53,12 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Install Dependencies
         run: pnpm install
+      - name: 'Automated Version Bump'
+        uses: 'phips28/gh-action-bump-version@master'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          version-type: ${{ inputs.version-bump }}
       - name: Publish on npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
