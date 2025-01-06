@@ -56,7 +56,7 @@ jobs:
       - name: 'Automated Version Bump'
         uses: 'phips28/gh-action-bump-version@master'
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version-type: ${{ inputs.version-bump }}
       - name: Publish on npm
