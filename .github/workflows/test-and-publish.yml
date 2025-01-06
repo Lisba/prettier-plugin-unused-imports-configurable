@@ -17,19 +17,8 @@ jobs:
     runs-on: ubuntu-22.04
     environment: Production
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-      - name: Install Dependencies
-        run: pnpm install
+      - name: Setup environment
+        uses: ./.github/workflows/setup-environment.yml
       - name: Run tests
         run: pnpm test
 
@@ -38,28 +27,15 @@ jobs:
     runs-on: ubuntu-22.04
     environment: Production
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-      - name: Configure npm registry .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - name: Install Dependencies
-        run: pnpm install
+      - name: Setup environment
+        uses: ./.github/workflows/setup-environment.yml
       - name: 'Automated Version Bump'
         uses: 'phips28/gh-action-bump-version@master'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           version-type: ${{ inputs.version-bump }}
-      - name: Publish on npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish --access public --no-git-checks
+      # - name: Publish on npm
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: pnpm publish --access public --no-git-checks
