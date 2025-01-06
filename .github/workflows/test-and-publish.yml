@@ -13,7 +13,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare-environment:
+  test:
+    runs-on: ubuntu-22.04
+    environment: Production
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Run tests
+        run: pnpm test
+
+  publish:
+    needs: ['test']
     runs-on: ubuntu-22.04
     environment: Production
     steps:
@@ -32,51 +53,7 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Install Dependencies
         run: pnpm install
-      - name: Upload environment files
-        uses: actions/upload-artifact@v3
-        with:
-          name: environment
-          path: |
-            node_modules
-            .npmrc
-            pnpm-lock.yaml
-            package.json
-            .
-
-  test:
-    needs: ['prepare-environment']
-    runs-on: ubuntu-22.04
-    environment: Production
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: environment
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - name: List downloaded artifacts
-        run: ls -la
-      - name: Run tests
-        run: pnpm test
-
-  publish:
-    needs: ['test']
-    runs-on: ubuntu-22.04
-    environment: Production
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: environment
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - name: List downloaded artifacts
-        run: ls -la
-      # - name: Publish on npm
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   run: pnpm publish --access public --no-git-checks
+      - name: Publish on npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --access public --no-git-checks
