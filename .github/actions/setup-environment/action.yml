@@ -14,13 +14,15 @@ runs:
       run: |
         corepack enable
         corepack prepare pnpm@9.0.0 --activate
+    - name: Add pnpm to PATH
+      shell: bash
+      run: echo "::add-path::$(npm bin --global)"
+    - name: Debug PATH
+      shell: bash
+      run: echo $PATH
     - name: Verify pnpm installation
       shell: bash
       run: pnpm --version
-    # - name: Install pnpm
-    #   uses: pnpm/action-setup@v4
-    #   with:
-    #     version: 9
     - name: Install dependencies
       shell: bash
       run: pnpm install
