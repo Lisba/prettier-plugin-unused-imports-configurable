@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-22.04
     environment: Production
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Setup environment
         uses: ./.github/actions/setup-environment
       - name: Run tests
@@ -27,6 +29,8 @@ jobs:
     runs-on: ubuntu-22.04
     environment: Production
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Setup environment
         uses: ./.github/actions/setup-environment
       # - name: 'Automated Version Bump'
