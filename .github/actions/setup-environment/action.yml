@@ -1,0 +1,21 @@
+name: Setup Environment
+description: Sets up Node.js, installs dependencies, and configures npm registry.
+
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'pnpm'
+    - name: Verify pnpm installation
+      run: pnpm --version
+    - name: Install dependencies
+      run: pnpm install
+    - name: Configure npm registry
+      run: echo "//registry.npmjs.org/:_authToken=${{ env.NPM_TOKEN }}" > ~/.npmrc
