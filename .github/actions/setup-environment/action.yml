@@ -12,11 +12,9 @@ runs:
     - name: Install pnpm
       shell: bash
       run: |
-        corepack enable
-        corepack prepare pnpm@9.0.0 --activate
-    - name: Add pnpm to PATH
-      shell: bash
-      run: echo "::add-path::$(npm bin --global)"
+        npm install -g pnpm@9
+        echo "PNPM_PATH=$(npm bin --global)" >> $GITHUB_ENV
+        echo "PATH=$PNPM_PATH:$PATH" >> $GITHUB_ENV
     - name: Debug PATH
       shell: bash
       run: echo $PATH
