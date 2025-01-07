@@ -15,7 +15,10 @@ runs:
         cache: 'pnpm'
     - name: Verify pnpm installation
       run: pnpm --version
+      shell: bash
     - name: Install dependencies
       run: pnpm install
+      shell: bash
     - name: Configure npm registry
       run: echo "//registry.npmjs.org/:_authToken=${{ env.NPM_TOKEN }}" > ~/.npmrc
+      shell: bash
