@@ -18,4 +18,4 @@ runs:
       run: pnpm install
     - name: Configure npm registry
       shell: bash
-      run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+      run: echo "//registry.npmjs.org/:_authToken=${{ env.NPM_TOKEN }}" > ~/.npmrc
