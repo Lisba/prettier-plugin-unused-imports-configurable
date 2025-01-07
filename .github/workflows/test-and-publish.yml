@@ -54,7 +54,6 @@ jobs:
           node-version: '20.x'
           cache: 'pnpm'
       - name: Install dependencies
-        shell: bash
         run: pnpm install
       - name: Configure npm registry
         shell: bash
