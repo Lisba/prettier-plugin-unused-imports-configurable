@@ -1,9 +1,9 @@
 # prettier-plugin-unused-imports-configurable
 
 [![Tests workflow](https://github.com/Lisba/prettier-plugin-unused-imports-configurable/actions/workflows/test.yml/badge.svg)](https://github.com/Lisba/prettier-plugin-unused-imports-configurable/actions/workflows/test.yml)
+![NPM Downloads](https://img.shields.io/npm/dm/prettier-plugin-unused-imports-configurable)
 ![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/prettier-plugin-unused-imports-configurable)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Lisba/prettier-plugin-unused-imports-configurable)
-![npm](https://img.shields.io/npm/dm/@lisba/prettier-plugin-unused-imports-configurable)
 ![NPM License](https://img.shields.io/npm/l/prettier-plugin-unused-imports-configurable)
 
 A Prettier plugin to remove unused imports from JavaScript and TypeScript modules, configurable to ignore specified folders.
