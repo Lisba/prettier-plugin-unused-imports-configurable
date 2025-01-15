@@ -9,4 +9,4 @@ lib
 package-lock.json
 .prettierrc.json
 index.js
-rollup.config.js
+rollup.config.mjs
