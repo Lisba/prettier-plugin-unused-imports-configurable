@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       prettier:
-        specifier: 3.4.2
+        specifier: ^3.4.2
         version: 3.4.2
       ts-morph:
         specifier: 24.0.0
